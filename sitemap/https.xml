@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://gonlo2.github.io/blog-test/en/about_me/</loc>
+    <priority>0.2</priority>
+    <lastmod>2020-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  
+  <url>
+    <loc>https://gonlo2.github.io/blog-test/es/sobre_mi/</loc>
+    <priority>0.2</priority>
+    <lastmod>2020-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  
+  <url>
+    <loc>https://gonlo2.github.io/blog-test/en/publications/</loc>
+    <priority>0.2</priority>
+    <lastmod>2020-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  
+  <url>
+    <loc>https://gonlo2.github.io/blog-test/es/publicaciones/</loc>
+    <priority>0.2</priority>
+    <lastmod>2020-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  
+  <url>
+    <loc>https://gonlo2.github.io/blog-test/en/blog/2019/05/12/why_dont_you_see_ghosts_in_galeras/</loc>
+    <priority>0.2</priority>
+    <lastmod>2020-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  
+  <url>
+    <loc>https://gonlo2.github.io/blog-test/</loc>
+    <priority>0.2</priority>
+    <lastmod>2020-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  
+  <url>
+    <loc>https://gonlo2.github.io/blog-test/es/blog/2019/05/12/por_qué_no_ves_fantasmas_en_galeras/</loc>
+    <priority>0.2</priority>
+    <lastmod>2020-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  
+  <url>
+    <loc>https://gonlo2.github.io/blog-test/es/</loc>
+    <priority>0.2</priority>
+    <lastmod>2020-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+  </url>
+  
+</urlset>

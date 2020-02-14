@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /blog-test/js/
+Disallow: /blog-test/css/
+Disallow: /blog-test/img/
+Disallow: /blog-test/vendor/
+Sitemap: /blog-test/sitemap/https.xml
