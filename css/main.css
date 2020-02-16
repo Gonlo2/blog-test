@@ -427,6 +427,10 @@ html, body {
   padding: 4px;
 }
 
+.articles {
+  margin-top: 0.5rem;
+}
+
 .lazy-container, .lazy-container-background, .lazy-blur, .lazy-blur-fade, .lazy-blur-slow-fade {
   width: 100%;
   height: 100%;
@@ -508,5 +512,70 @@ html, body {
     -moz-filter: blur(0px);
     -o-filter: blur(0px);
     filter: blur(0px);
+  }
+}
+
+.error-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+
+.error-page h1 {
+  font-size: 20vh;
+  font-weight: bold;
+  position: relative;
+  padding: 0;
+}
+
+.error-page h1:after {
+  content: attr(data-h1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  color: transparent;
+  background: #000000;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 400%;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.25);
+}
+
+.error-page h1 + p {
+  color: #d6d6d6;
+  font-size: 6vh;
+  font-weight: bold;
+  line-height: 10vh;
+  max-width: 600px;
+  position: relative;
+  top: -6vh;
+}
+
+.error-page h1 + p:after {
+  content: attr(data-p);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  color: transparent;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+}
+
+@media (max-width: 767px) {
+  .error-page h1 {
+    font-size: 32vw;
+  }
+  .error-page h1 + p {
+    font-size: 8vw;
+    line-height: 10vw;
+    max-width: 70vw;
+    top: -8vw;
   }
 }
