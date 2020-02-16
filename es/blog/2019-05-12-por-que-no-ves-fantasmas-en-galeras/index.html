@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="/blog-test/img/ico/favicon.ico" />
 
     
-    <meta name="theme-color" content="None">
+    <meta name="theme-color" content="#3273dc">
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
     <!-- Bulma -->
@@ -82,11 +82,11 @@
 
         <div class="navbar-dropdown">
           
-            <a class="navbar-item" href="/blog-test/en/blog/2019/05/12/why_dont_you_see_ghosts_in_galeras/">
+            <a class="navbar-item" href="/blog-test/en/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/">
               🇺🇸 English
             </a>
           
-            <a class="navbar-item" href="/blog-test/es/blog/2019/05/12/por_qué_no_ves_fantasmas_en_galeras/">
+            <a class="navbar-item" href="/blog-test/es/blog/2019-05-12-por-que-no-ves-fantasmas-en-galeras/">
               🇪🇸 Español
             </a>
           
@@ -146,14 +146,7 @@ de estas herramientas pueden ser <a href="https://www.percona.com/doc/percona-to
 
 <p><code>Galera</code> es un <em>plug-in</em> para <em>InnoDB</em> que permite realizar una replicación síncrona multi-maestro. Este enfoque permite, a diferencia de la replicación normal de MySQL, que todos los nodos del grupo tengan los mismos datos y, por tanto, aplicar escrituras en todos los nodos del grupo sacrificando algo de rendimiento.</p>
 
-<div class="columns">
-  <div class="column is-8-mobile is-offset-2-mobile is-6-tablet is-offset-3-tablet">
-    <figure class="image post-image-container">
-      <img class="post-image" src="/blog-test/blog/2019/05/12/why_dont_you_see_ghosts_in_galeras/img/galera_replication.png" alt="Replicación con Galera">
-      <figcaption>Replicación con Galera. Imagen de <a href="https://severalnines.com/resources/tutorials/galera-cluster-mysql-tutorial">severalnines</a></figcaption>
-    </figure>
-  </div>
-</div>
+<div class="columns"> <div class="column is-8-mobile is-offset-2-mobile is-6-tablet is-offset-3-tablet"> <div class="post-image-container"> <div class="image post-image"> <div class="lazy-hide lazy-container"> <img alt="Replicación con Galera" class="lazy lazy-blur" data-srcset="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.190px.png 190w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.480px.png 480w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.674px.png 1348w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.836px.png 4180w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.975px.png 4875w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.1109px.png 5545w" data-src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.190px.png" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.preview.png" /> </div> <noscript> <div class="lazy-container"> <img alt="Replicación con Galera" class="" srcset="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.190px.png 190w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.480px.png 480w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.674px.png 1348w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.836px.png 4180w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.975px.png 4875w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.1109px.png 5545w" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.190px.png" /> </div> </noscript> </div> <div class="image-caption">Replicación con Galera. Imagen de <a href="https://severalnines.com/resources/tutorials/galera-cluster-mysql-tutorial">severalnines</a></div> </div>  </div> </div>
 
 <p>Los cambios de esquema son <a href="https://galeracluster.com/library/documentation/schema-upgrades.html">operaciones especiales</a> en <code>Galera</code>, dado que modifican la base de datos y son no-transaccionales. <code>Galera</code> cuenta con dos modos para aplicar cambios de base de datos mediante la operación <code>ALTER</code>:</p>
 
@@ -178,14 +171,7 @@ línea y
 tiene interesantes ventajas respecto a otras herramientas existentes. Una de sus características principales es que no usa
 <em>triggers</em> para sincronizar los cambios de la tabla original con la tabla fantasma<sup class="footnote-ref" id="fnref-3"><a href="#fn-3">3</a></sup> si no los <em>binlogs</em> de <em>MySQL</em> y, por ello, permite verdaderamente parar totalmente la migración en caso de necesidad.</p>
 
-<div class="columns">
-  <div class="column is-8-mobile is-offset-2-mobile is-6-tablet is-offset-3-tablet">
-    <figure class="image post-image-container">
-      <img class="post-image" src="/blog-test/blog/2019/05/12/why_dont_you_see_ghosts_in_galeras/img/gh-ost.svg" alt="El logo de gh-ost">
-      <figcaption>El logo de gh-ost</figcaption>
-    </figure>
-  </div>
-</div>
+<div class="columns"> <div class="column is-8-mobile is-offset-2-mobile is-6-tablet is-offset-3-tablet"> <div class="post-image-container"> <div class="image post-image"> <div class="lazy-hide lazy-container"> <img alt="El logo de gh-ost" class="lazy lazy-blur" data-srcset="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.190px.png 190w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.480px.png 480w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.674px.png 1348w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.836px.png 4180w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.975px.png 4875w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.1109px.png 5545w" data-src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.190px.png" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.preview.png" /> </div> <noscript> <div class="lazy-container"> <img alt="El logo de gh-ost" class="" srcset="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.190px.png 190w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.480px.png 480w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.674px.png 1348w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.836px.png 4180w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.975px.png 4875w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.1109px.png 5545w" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.190px.png" /> </div> </noscript> </div> <div class="image-caption">El logo de gh-ost</div> </div>  </div> </div>
 
 <p>La razón que impide usar <code>gh-ost</code> con <code>Galera</code> es que, para poder hacer la etapa de <a href="https://github.com/github/gh-ost/blob/master/doc/cut-over.md"><em>cut-over</em></a>, <code>gh-ost</code> hace uso de la instrucción <a href="https://dev.mysql.com/doc/refman/8.0/en/lock-tables.html">lock</a>, instrucción no está soportada en <code>Galera</code>. </p>
 
@@ -217,27 +203,13 @@ funciona la estrategia de <em>gh-ost</em> para aplicar el <em>cut-over</em> ató
 <p>Por ello el uso del <code>LOCK TABLES</code> queda descartado y es necesario analizar otras soluciones existentes para la realización de
 migraciones de esquema sin pérdida de servicio y que si permiten su uso con <code>Galera</code>, es ahí donde entra en juego <code>pt-osc</code>.</p>
 
-<div class="columns">
-  <div class="column is-8-mobile is-offset-2-mobile is-6-tablet is-offset-3-tablet">
-    <figure class="image post-image-container">
-      <img class="post-image" src="/blog-test/blog/2019/05/12/why_dont_you_see_ghosts_in_galeras/img/brainstorming.jpg" alt="Hombre pensando">
-      <figcaption>Hombre pensando. Imagen de <a href="https://www.pexels.com/@startup-stock-photos">Startup Stock Photos</a></figcaption>
-    </figure>
-  </div>
-</div>
+<div class="columns"> <div class="column is-8-mobile is-offset-2-mobile is-6-tablet is-offset-3-tablet"> <div class="post-image-container"> <div class="image post-image"> <div class="lazy-hide lazy-container"> <img alt="Hombre pensando" class="lazy lazy-blur" data-srcset="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.190px.jpg 190w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.480px.jpg 480w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.674px.jpg 1348w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.836px.jpg 4180w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.975px.jpg 4875w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.1109px.jpg 5545w" data-src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.190px.jpg" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.preview.jpg" /> </div> <noscript> <div class="lazy-container"> <img alt="Hombre pensando" class="" srcset="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.190px.jpg 190w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.480px.jpg 480w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.674px.jpg 1348w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.836px.jpg 4180w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.975px.jpg 4875w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.1109px.jpg 5545w" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.190px.jpg" /> </div> </noscript> </div> <div class="image-caption">Hombre pensando. Imagen de <a href="https://www.pexels.com/@startup-stock-photos">Startup Stock Photos</a></div> </div>  </div> </div>
 
 <h3 id="pt-osc">pt-osc</h3>
 
-<p><a href="https://www.percona.com/doc/percona-toolkit/3.0/pt-online-schema-change.html"><em>pt-osc</em></a> es una herramienta de Percona que permite realizar migraciones de esquemas sin pérdida de servicio compatible con <code>Galera</code> y que se basa en delegar en la base de datos la copia los datos modificados durante la migración mediante <em>triggers</em>, de esta forma se asegura que los cambios de la tabla original estén sincronizados con la tabla fantasma<sup class="footnote-ref" id="fnref-4"><a href="#fn-4">4</a></sup>.</p>
+<p><a href="https://www.percona.com/doc/percona-toolkit/3.0/pt-online-schema-change.html"><em>pt-osc</em></a> es una herramienta de Percona que permite realizar migraciones de esquemas sin pérdida de servicio compatible con <code>Galera</code> y que se basa en delegar en la base de datos la copia los datos modificados durante la migración mediante <em>triggers</em>, de esta forma se asegura que los cambios de la tabla original estén sincronizados con la tabla fantasma. Si quieres saber como asegura la consistencia te recomiendo que leas esta respuesta de <a href="https://dba.stackexchange.com/a/93515">StackExchange</a>.</p>
 
-<div class="columns">
-  <div class="column is-8-mobile is-offset-2-mobile is-6-tablet is-offset-3-tablet">
-    <figure class="image post-image-container">
-      <img class="post-image" src="/blog-test/blog/2019/05/12/why_dont_you_see_ghosts_in_galeras/img/Percona_Toolkit.jpg" alt="El logo de percona toolkit">
-      <figcaption>El logo de percona toolkit</figcaption>
-    </figure>
-  </div>
-</div>
+<div class="columns"> <div class="column is-8-mobile is-offset-2-mobile is-6-tablet is-offset-3-tablet"> <div class="post-image-container"> <div class="image post-image"> <div class="lazy-hide lazy-container"> <img alt="El logo de percona toolkit" class="lazy lazy-blur" data-srcset="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.190px.jpg 190w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.480px.jpg 480w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.674px.jpg 1348w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.836px.jpg 4180w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.975px.jpg 4875w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.1109px.jpg 5545w" data-src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.190px.jpg" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.preview.jpg" /> </div> <noscript> <div class="lazy-container"> <img alt="El logo de percona toolkit" class="" srcset="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.190px.jpg 190w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.480px.jpg 480w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.674px.jpg 1348w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.836px.jpg 4180w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.975px.jpg 4875w, /blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.1109px.jpg 5545w" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.190px.jpg" /> </div> </noscript> </div> <div class="image-caption">El logo de percona toolkit</div> </div>  </div> </div>
 
 <h3 id="solucion-planteada">Solución planteada</h3>
 
@@ -279,10 +251,6 @@ semanas de pruebas hemos empezado a usarlo en producción con unos muy buenos re
 <li id="fn-3">
 <p>Con tabla fantasma me refiero a la tabla donde se ha aplicado los cambios de esquema y que es necesario rellenar con los datos de la original.&#160;<a href="#fnref-3" class="footnoteBackLink" title="Volver a la nota a pie de página 3 del texto.">&#8617;</a></p>
 </li>
-
-<li id="fn-4">
-<p>Si quieres saber como asegura la consistencia te recomiendo que leas esta respuesta de <a href="https://dba.stackexchange.com/a/93515">StackExchange</a>.&#160;<a href="#fnref-4" class="footnoteBackLink" title="Volver a la nota a pie de página 4 del texto.">&#8617;</a></p>
-</li>
 </ol>
 </div>
 
@@ -299,9 +267,9 @@ semanas de pruebas hemos empezado a usarlo en producción con unos muy buenos re
 
       <footer class="footer">
         <div class="content has-text-centered">
-          <p>© Juan Manuel Fdez 2020. Hecho con curiosidad, café y vim.</p>
+          <p>© Juan Manuel Fdez 2020. Hecho con curiosidad, café y neovim.</p>
           <div>
-            <a href="#TODO">
+            <a href="/blog-test/es/rss.xml">
               <span class="icon">
                 <i class="fas fa-rss"></i>
               </span>

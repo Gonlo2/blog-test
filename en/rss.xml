@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
+  <channel>
+    <title>Another engineer web</title>
+    <link>https://gonlo2.github.io/en/rss.xml</link>
+    <description>A feed of the blog posts</description>
+    <atom:link href="https://gonlo2.github.io/en/rss.xml" rel="self"/>
+    <docs>http://www.rssboard.org/rss-specification</docs>
+    <generator>python-feedgen</generator>
+    <image>
+      <url>https://gonlo2.github.io/img/ico/favicon.png</url>
+      <title>Another engineer web</title>
+      <link>https://gonlo2.github.io/en/rss.xml</link>
+    </image>
+    <language>en_US</language>
+    <lastBuildDate>Sun, 16 Feb 2020 00:30:26 +0000</lastBuildDate>
+    <item>
+      <title>Why don't you see ghosts in galeras?</title>
+      <link>https://gonlo2.github.io/blog-test/en/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/</link>
+      <description>&lt;p&gt;The development of software sometimes implies changes that affect the data model but such modifications have a series of problems such as the inability to stop the system or the volume of data to be reorganized.&lt;/p&gt;
+
+&lt;p&gt;In this post I want to talk about the existing tools for database schema change in MySQL, what limitations do those tools have if you use &lt;code&gt;Galera&lt;/code&gt; for replication and how I have adapted &lt;code&gt;gh-ost&lt;/code&gt;, the GitHub schema change tool, to be able to use it with &lt;code&gt;Galera&lt;/code&gt;.&lt;/p&gt;
+</description>
+      <content:encoded>&lt;p&gt;The development of software sometimes implies changes that affect the data model but such modifications have a series of problems such as the inability to stop the system or the volume of data to be reorganized.&lt;/p&gt;
+
+&lt;p&gt;In this post I want to talk about the existing tools for database schema change in MySQL, what limitations do those tools have if you use &lt;code&gt;Galera&lt;/code&gt; for replication and how I have adapted &lt;code&gt;gh-ost&lt;/code&gt;, the GitHub schema change tool, to be able to use it with &lt;code&gt;Galera&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id="schema-changes"&gt;Schema changes&lt;/h3&gt;
+
+&lt;p&gt;In MySQL it is possible to make database changes in two main ways:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Using the &lt;code&gt;ALTER&lt;/code&gt; operation of MySQL; it is the simplest way but it does not allow to abort the process in case of necessity and except for certain operations, it prevents the concurrent use of the table to be modified during the process.&lt;/li&gt;
+&lt;li&gt;Through the use of third party tools that allow a greater control of the process although with certain restrictions. Some of these tools can be &lt;a href="https://www.percona.com/doc/percona-toolkit/LATEST/pt-online-schema-change.html"&gt;pt-osc&lt;/a&gt;, &lt;a href="https://github.com/facebookincubator/OnlineSchemaChange"&gt;OnlineSchemaChange&lt;/a&gt; or &lt;a href="https://github.com/github/gh-ost"&gt;gh-ost&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These two methods are also applicable if you use &lt;code&gt;Galera&lt;/code&gt; although, because it follows a master-master approach, it has some peculiarities to apply database changes, both through the operations provided by MySQL and by the third party tools.&lt;/p&gt;
+
+&lt;h3 id="galera"&gt;Galera&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;Galera&lt;/code&gt; is a plug-in for InnoDB that allows a multi-master synchronous replication. This approach allows, unlike normal MySQL replication, that all the nodes in the clister have the same data and, therefore, do writes in all the nodes of the cluster sacrificing some performance.&lt;/p&gt;
+
+&lt;figure&gt;
+      &lt;img class="post-image" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/galera_replication.836px.png" alt="Galera replication"&gt;
+      &lt;figcaption&gt;Galera replication. Image from &lt;a href="https://severalnines.com/resources/tutorials/galera-cluster-mysql-tutorial"&gt;severalnines&lt;/a&gt;&lt;/figcaption&gt;
+    &lt;/figure&gt;
+
+&lt;p&gt;Schema changes are &lt;a href="https://galeracluster.com/library/documentation/schema-upgrades.html"&gt;special operations&lt;/a&gt; in &lt;code&gt;Galera&lt;/code&gt;, since they modify the database and are non-transactional. &lt;code&gt;Galera&lt;/code&gt; has two modes for applying database changes using the &lt;code&gt;ALTER&lt;/code&gt; operation:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TOI&lt;/strong&gt;&lt;sup class="footnote-ref" id="fnref-1"&gt;&lt;a href="#fn-1"&gt;1&lt;/a&gt;&lt;/sup&gt; are schema changes made in all nodes of the cluster in the same total order sequence, preventing other transactions from being applied during the operation.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RSU&lt;/strong&gt;&lt;sup class="footnote-ref" id="fnref-2"&gt;&lt;a href="#fn-2"&gt;2&lt;/a&gt;&lt;/sup&gt; are schema changes that are executed locally, affecting only the node in which they are executed. The changes are not replicated to the rest of the cluster.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These two modes have a number of drawbacks: the &lt;strong&gt;TOI&lt;/strong&gt; operations block the whole cluster during the schema change while the &lt;strong&gt;RSU&lt;/strong&gt; operations can leave the cluster in an inconsistent state if the binary log in &lt;code&gt;ROW&lt;/code&gt; format is not compatible between schemas.&lt;/p&gt;
+
+&lt;p&gt;Regarding the use of third party tools, &lt;code&gt;Galera&lt;/code&gt; has a series of &lt;a href="https://www.fromdual.com/limitations-of-galera-cluster"&gt;limitations&lt;/a&gt; among which is the lack of support for table locking, an operation necessary in &lt;code&gt;OnlineSchemaChange&lt;/code&gt; and &lt;code&gt;gh-ost&lt;/code&gt; tools to apply the last events due to its asynchronous nature, a problem that &lt;code&gt;pt-osc&lt;/code&gt; does not have because it is synchronous due to the use of triggers.&lt;/p&gt;
+
+&lt;p&gt;Although &lt;code&gt;pt-osc&lt;/code&gt; is compatible with &lt;code&gt;Galera&lt;/code&gt;, the use of triggers presents a number of risks because it is not possible to stop the operation completely if necessary and the use of triggers adds an extra load to the database. Therefore, to allow the use of &lt;code&gt;gh-ost&lt;/code&gt; in &lt;code&gt;Galera&lt;/code&gt;, it is necessary to investigate why it need the use of &lt;code&gt;LOCK TABLES&lt;/code&gt; and look for an alternative approach.&lt;/p&gt;
+
+&lt;h3 id="gh-ost"&gt;gh-ost&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href="https://github.com/github/gh-ost"&gt;&lt;em&gt;gh-ost&lt;/em&gt;&lt;/a&gt; is GitHub's tool for applying online schema changes and has interesting advantages over other existing tools. One of its main features is that it doesn't use triggers to synchronize the changes of the original table with the ghost table &lt;sup class="footnote-ref" id="fnref-3"&gt;&lt;a href="#fn-3"&gt;3&lt;/a&gt;&lt;/sup&gt; but the binlogs of MySQL and therefore it really allows to stop the migration completely if necessary.&lt;/p&gt;
+
+&lt;figure&gt;
+      &lt;img class="post-image" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/gh-ost.836px.png" alt="The gh-ost logo"&gt;
+      &lt;figcaption&gt;The gh-ost logo&lt;/figcaption&gt;
+    &lt;/figure&gt;
+
+&lt;p&gt;The reason that prevents using &lt;code&gt;gh-ost&lt;/code&gt; with &lt;code&gt;Galera&lt;/code&gt; is that, in order to do the &lt;a href="https://github.com/github/gh-ost/blob/master/doc/cut-over.md"&gt;cut-over&lt;/a&gt; phase, &lt;code&gt;gh-ost&lt;/code&gt; makes use of the &lt;a href="https://dev.mysql.com/doc/refman/8.0/en/lock-tables.html"&gt;lock&lt;/a&gt; operation, that it is not supported in &lt;code&gt;Galera&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h4 id="cut-over"&gt;Cut-over&lt;/h4&gt;
+
+&lt;p&gt;In the documentation of &lt;code&gt;gh-ost&lt;/code&gt; the cut-over phase is defined as &lt;code&gt;the final major step of the migration&lt;/code&gt; and its goal is to replace the ghost table with the original one. For this purpose, it is necessary that both tables have the same records applied at the time of the swap, otherwise data would be lost in the migration process.&lt;/p&gt;
+
+&lt;p&gt;Unlike other online schema change tools such as &lt;code&gt;pt-osc&lt;/code&gt;, &lt;code&gt;gh-ost&lt;/code&gt; does not delegate in the database the application of the modified records during the migration and, therefore, it needs to momentarily block the writes in the original table until all pending changes in the binlog are applied, that is where the use of the lock operation in the original table is necessary.&lt;/p&gt;
+
+&lt;h4 id="lock-tables"&gt;LOCK TABLES&lt;/h4&gt;
+
+&lt;p&gt;The first approach that may come to mind is that although the lock operation in &lt;code&gt;Galera&lt;/code&gt; does not allow blocking access to a table in all nodes atomically, it does accept blocking access to a particular node, so it may be possible to apply &lt;code&gt;LOCK TABLES&lt;/code&gt; manually in all nodes. After some research and a couple of tests this approach is discarded for several reasons:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The atomic cut-over algorithm of &lt;code&gt;gh-ost&lt;/code&gt; needs the use of several independent connections to work and although it guarantees to leave the cluster in a consistent state in the case of errors in the connections, this premise is no longer true if a &lt;code&gt;LOCK TABLES&lt;/code&gt; must be applied for each node. If you want to know how &lt;code&gt;gh-ost&lt;/code&gt; strategy to apply the atomic cut-over works, I recommend you to read &lt;a href="https://github.com/github/gh-ost/issues/82"&gt;Issue #82&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;As can be seen in &lt;a href="https://jira.mariadb.org/browse/MDEV-12647"&gt;MDEV-12647&lt;/a&gt;, it is quite possible to leave some of the nodes hanging when using the &lt;code&gt;LOCK TABLES&lt;/code&gt; on each node.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Therefore, the use of &lt;code&gt;LOCK TABLES&lt;/code&gt; is discarded and it is necessary to analyze other existing solutions to perform schema migrations without loss of service and that if they allow its use with the &lt;code&gt;Galera&lt;/code&gt;, that is where &lt;code&gt;pt-osc&lt;/code&gt; comes into play.&lt;/p&gt;
+
+&lt;figure&gt;
+      &lt;img class="post-image" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/brainstorming.836px.jpg" alt="Man thinking"&gt;
+      &lt;figcaption&gt;Man thinking. Image from &lt;a href="https://www.pexels.com/@startup-stock-photos"&gt;Startup Stock Photos&lt;/a&gt;&lt;/figcaption&gt;
+    &lt;/figure&gt;
+
+&lt;h3 id="pt-osc"&gt;pt-osc&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href="https://www.percona.com/doc/percona-toolkit/3.0/pt-online-schema-change.html"&gt;pt-osc&lt;/a&gt; is a Percona tool that allows to perform schema migrations without loss of service compatible with &lt;code&gt;Galera&lt;/code&gt; and it is based on delegating to the database the data modified during the migration using triggers, this way it is ensured that the changes of the original table are synchronized with the ghost table. If you want to know how to ensure consistency I recommend you to read this answer from &lt;a href="https://dba.stackexchange.com/a/93515"&gt;StackExchange&lt;/a&gt;.&lt;/p&gt;
+
+&lt;figure&gt;
+      &lt;img class="post-image" src="/blog-test/img/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/percona_toolkit.836px.jpg" alt="The Percona toolkit logo"&gt;
+      &lt;figcaption&gt;The Percona toolkit logo&lt;/figcaption&gt;
+    &lt;/figure&gt;
+
+&lt;h3 id="solution-proposed"&gt;Solution proposed&lt;/h3&gt;
+
+&lt;p&gt;Therefore, if it is possible to perform a consistent migration using triggers it may be possible to use them even if only for the cut-over phase. To do this, it is possible to raise a new cut-over strategy, the procedure for which is as follows:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;At the time of starting the cut-over an event is injected in the binlog to notify &lt;code&gt;gh-ost&lt;/code&gt; to stop writing the new records in the ghost table but to keep reading them from the binlog.&lt;/li&gt;
+&lt;li&gt;Once the &lt;code&gt;gh-ost&lt;/code&gt; event is received it stops applying the events but stores the values according to the unique key used
+during the migration.&lt;/li&gt;
+&lt;li&gt;The necessary triggers are created to synchronize the new records between the original table and the ghost one.&lt;/li&gt;
+&lt;li&gt;A new event is injected into the binlog to notify that the triggers have been created.&lt;/li&gt;
+&lt;li&gt;Once this second event is received, the binlog is no longer read and therefore alto it stop storage the values according to the unique key.&lt;/li&gt;
+&lt;li&gt;The records between the two events may be inconsistent since some recors of the
+binlog have not been applied. To solve this problem, a clean-up phase is performed, which consists of removing them from the ghost table is exists and inserting them again from the original table.&lt;/li&gt;
+&lt;li&gt;Once the events have been sanitized, both tables are consistent, so it is possible to use the &lt;code&gt;RENAME TABLE&lt;/code&gt; operation to swap the original table with the ghost one in an atomic way.&lt;/li&gt;
+&lt;li&gt;After that operation or in the case of failure, the triggers are removed.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id="results-and-conclusion"&gt;Results and conclusion&lt;/h3&gt;
+
+&lt;p&gt;Once I proposed a solution I implemented the necessary changes to the &lt;code&gt;gh-ost&lt;/code&gt; code and after a couple of weeks of testing we started using it in production with very good results, so I created the pull request &lt;a href="https://github.com/github/gh-ost/pull/780"&gt;#780&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Regarding the conclusion, even if &lt;code&gt;gh-ost&lt;/code&gt; is considered triggerless, the life of the necessary triggers will be equal to the time it takes to apply the pending changes to the binlog and clean up the entries that may be inconsistent, which will be just a few seconds in the worst case, so it is considered acceptable.&lt;/p&gt;
+
+&lt;div class="footnotes"&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id="fn-1"&gt;
+&lt;p&gt;Total Order Isolation.&amp;#160;&lt;a href="#fnref-1" class="footnoteBackLink" title="Jump back to footnote 1 in the text."&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id="fn-2"&gt;
+&lt;p&gt;Rolling Schema Upgrade.&amp;#160;&lt;a href="#fnref-2" class="footnoteBackLink" title="Jump back to footnote 2 in the text."&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+
+&lt;li id="fn-3"&gt;
+&lt;p&gt;With ghost table I refer the table where the schema changes have been applied and that needs to be filled in with the data of the original one.&amp;#160;&lt;a href="#fnref-3" class="footnoteBackLink" title="Jump back to footnote 3 in the text."&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</content:encoded>
+      <guid isPermaLink="false">/blog-test/en/blog/2019-05-12-why-dont-you-see-ghosts-in-galeras/</guid>
+      <category>MySQL</category>
+      <category>Schema changes</category>
+    </item>
+  </channel>
+</rss>
